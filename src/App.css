@@ -3,11 +3,14 @@ body {
   font-family: "Segoe UI", "Roboto", "Arial", sans-serif;
   background: #f6f8fa;
   min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .App {
   max-width: 400px;
-  margin: 40px auto;
+  /* Remove margin for vertical centering */
   background: #fff;
   border-radius: 16px;
   box-shadow: 0 4px 24px rgba(0, 0, 0, 0.08);
