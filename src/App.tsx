@@ -17,6 +17,38 @@ interface WeatherData {
   wind: { speed: number };
 }
 
+function getOutfitRecommendation(weather: WeatherData): string {
+  const temp = weather.main.temp;
+  const condition = weather.weather[0].main.toLowerCase();
+
+  if (
+    condition.includes("rain") ||
+    condition.includes("drizzle") ||
+    condition.includes("thunderstorm")
+  ) {
+    return "Take an umbrella and wear waterproof shoes.";
+  }
+  if (condition.includes("snow")) {
+    return "Wear a warm coat, gloves, and boots.";
+  }
+  if (temp < 5) {
+    return "Wear a heavy jacket, hat, and gloves.";
+  }
+  if (temp < 15) {
+    return "Wear a light jacket or sweater.";
+  }
+  if (condition.includes("clear")) {
+    return "Sunglasses suggested! Dress comfortably.";
+  }
+  if (temp > 28) {
+    return "Wear light, breathable clothes and stay hydrated.";
+  }
+  if (condition.includes("cloud")) {
+    return "It might be cool, consider a light layer.";
+  }
+  return "Dress comfortably for the weather.";
+}
+
 function App() {
   const [weather, setWeather] = useState<WeatherData | null>(null);
   const [loading, setLoading] = useState(false);
@@ -75,6 +107,9 @@ function App() {
           </p>
           <p>Humidity: {weather.main.humidity}%</p>
           <p>Wind speed: {weather.wind.speed} m/s</p>
+          <hr style={{ margin: "16px 0" }} />
+          <strong>Outfit Recommendation:</strong>
+          <p>{getOutfitRecommendation(weather)}</p>
         </div>
       )}
     </div>
