@@ -1,26 +1,11 @@
-import React, { useState } from "react";
-import reactLogo from "./assets/react.svg";
-import viteLogo from "/vite.svg";
-import "./App.css";
+import React from "react";
 import CitySearch from "./CitySearch";
-
-interface WeatherData {
-  name: string;
-  main: {
-    temp: number;
-    feels_like: number;
-    temp_min: number;
-    temp_max: number;
-    humidity: number;
-  };
-  weather: { description: string; icon: string }[];
-  wind: { speed: number };
-}
+import { WeatherProvider, useWeather } from "./WeatherContext";
+import type { WeatherData } from "./WeatherContext";
 
 function getOutfitRecommendation(weather: WeatherData): string {
   const temp = weather.main.temp;
   const condition = weather.weather[0].main.toLowerCase();
-
   if (
     condition.includes("rain") ||
     condition.includes("drizzle") ||
@@ -49,45 +34,11 @@ function getOutfitRecommendation(weather: WeatherData): string {
   return "Dress comfortably for the weather.";
 }
 
-function App() {
-  const [weather, setWeather] = useState<WeatherData | null>(null);
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState<string | null>(null);
-  const [history, setHistory] = useState<string[]>([]);
-
-  const handleCitySearch = async (city: string) => {
-    setLoading(true);
-    setError(null);
-    setWeather(null);
-    try {
-      const apiKey = "c015521447d008834169fdf44b512532"; // Replace with your OpenWeatherMap API key
-      const response = await fetch(
-        `https://api.openweathermap.org/data/2.5/weather?q=${encodeURIComponent(
-          city
-        )}&appid=${apiKey}&units=metric`
-      );
-      if (!response.ok) {
-        throw new Error("City not found or API error");
-      }
-      const data = await response.json();
-      setWeather(data);
-      setHistory((prev) => {
-        const newHistory = [
-          city,
-          ...prev.filter((c) => c.toLowerCase() !== city.toLowerCase()),
-        ];
-        return newHistory.slice(0, 5);
-      });
-    } catch (err: any) {
-      setError(err.message || "Failed to fetch weather");
-    } finally {
-      setLoading(false);
-    }
-  };
-
+function AppContent() {
+  const { weather, loading, error, history, searchCity } = useWeather();
   return (
     <div className="App">
-      <CitySearch onSearch={handleCitySearch} />
+      <CitySearch onSearch={searchCity} />
       {history.length > 0 && (
         <div className="recent-searches">
           <strong>Recent Searches:</strong>
@@ -96,7 +47,7 @@ function App() {
               <li key={city + idx}>
                 <button
                   className="history-btn"
-                  onClick={() => handleCitySearch(city)}
+                  onClick={() => searchCity(city)}
                 >
                   {city}
                 </button>
@@ -132,4 +83,10 @@ function App() {
   );
 }
 
-export default App;
+export default function App() {
+  return (
+    <WeatherProvider>
+      <AppContent />
+    </WeatherProvider>
+  );
+}
