@@ -1,4 +1,4 @@
-import { useState } from "react";
+import React, { useState } from "react";
 import reactLogo from "./assets/react.svg";
 import viteLogo from "/vite.svg";
 import "./App.css";
@@ -53,6 +53,7 @@ function App() {
   const [weather, setWeather] = useState<WeatherData | null>(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [history, setHistory] = useState<string[]>([]);
 
   const handleCitySearch = async (city: string) => {
     setLoading(true);
@@ -70,6 +71,13 @@ function App() {
       }
       const data = await response.json();
       setWeather(data);
+      setHistory((prev) => {
+        const newHistory = [
+          city,
+          ...prev.filter((c) => c.toLowerCase() !== city.toLowerCase()),
+        ];
+        return newHistory.slice(0, 5);
+      });
     } catch (err: any) {
       setError(err.message || "Failed to fetch weather");
     } finally {
@@ -80,6 +88,31 @@ function App() {
   return (
     <div className="App">
       <CitySearch onSearch={handleCitySearch} />
+      {history.length > 0 && (
+        <div style={{ marginBottom: 16 }}>
+          <strong>Recent Searches:</strong>
+          <ul
+            style={{ listStyle: "none", padding: 0, display: "flex", gap: 8 }}
+          >
+            {history.map((city, idx) => (
+              <li key={city + idx}>
+                <button
+                  style={{
+                    cursor: "pointer",
+                    background: "#f0f0f0",
+                    border: "1px solid #ccc",
+                    borderRadius: 4,
+                    padding: "4px 8px",
+                  }}
+                  onClick={() => handleCitySearch(city)}
+                >
+                  {city}
+                </button>
+              </li>
+            ))}
+          </ul>
+        </div>
+      )}
       {loading && <p>Loading...</p>}
       {error && <p style={{ color: "red" }}>{error}</p>}
       {weather && (
