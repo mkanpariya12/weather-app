@@ -11,8 +11,10 @@ interface WeatherData {
     feels_like: number;
     temp_min: number;
     temp_max: number;
+    humidity: number;
   };
   weather: { description: string; icon: string }[];
+  wind: { speed: number };
 }
 
 function App() {
@@ -71,6 +73,8 @@ function App() {
           <p>
             Min: {weather.main.temp_min}°C / Max: {weather.main.temp_max}°C
           </p>
+          <p>Humidity: {weather.main.humidity}%</p>
+          <p>Wind speed: {weather.wind.speed} m/s</p>
         </div>
       )}
     </div>
