@@ -89,21 +89,13 @@ function App() {
     <div className="App">
       <CitySearch onSearch={handleCitySearch} />
       {history.length > 0 && (
-        <div style={{ marginBottom: 16 }}>
+        <div className="recent-searches">
           <strong>Recent Searches:</strong>
-          <ul
-            style={{ listStyle: "none", padding: 0, display: "flex", gap: 8 }}
-          >
+          <ul>
             {history.map((city, idx) => (
               <li key={city + idx}>
                 <button
-                  style={{
-                    cursor: "pointer",
-                    background: "#f0f0f0",
-                    border: "1px solid #ccc",
-                    borderRadius: 4,
-                    padding: "4px 8px",
-                  }}
+                  className="history-btn"
                   onClick={() => handleCitySearch(city)}
                 >
                   {city}
@@ -116,23 +108,13 @@ function App() {
       {loading && <p>Loading...</p>}
       {error && <p style={{ color: "red" }}>{error}</p>}
       {weather && (
-        <div
-          style={{
-            marginTop: 16,
-            padding: 16,
-            border: "1px solid #ccc",
-            borderRadius: 8,
-          }}
-        >
+        <div className="weather-card">
           <h2>{weather.name}</h2>
-          <p>
-            <img
-              src={`https://openweathermap.org/img/wn/${weather.weather[0].icon}@2x.png`}
-              alt={weather.weather[0].description}
-              style={{ verticalAlign: "middle" }}
-            />
-            {weather.weather[0].description}
-          </p>
+          <img
+            src={`https://openweathermap.org/img/wn/${weather.weather[0].icon}@2x.png`}
+            alt={weather.weather[0].description}
+          />
+          <p>{weather.weather[0].description}</p>
           <p>Temperature: {weather.main.temp}°C</p>
           <p>Feels like: {weather.main.feels_like}°C</p>
           <p>
@@ -140,9 +122,10 @@ function App() {
           </p>
           <p>Humidity: {weather.main.humidity}%</p>
           <p>Wind speed: {weather.wind.speed} m/s</p>
-          <hr style={{ margin: "16px 0" }} />
-          <strong>Outfit Recommendation:</strong>
-          <p>{getOutfitRecommendation(weather)}</p>
+          <div className="outfit-title">Outfit Recommendation:</div>
+          <div className="outfit-recommendation">
+            {getOutfitRecommendation(weather)}
+          </div>
         </div>
       )}
     </div>
